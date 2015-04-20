@@ -2,6 +2,16 @@
 
 Simplify intent creation, passing extras, activity animations and provides abstraction over screen flow.
 
+## Gradle
+    
+    repositories {
+        maven{url "https://github.com/shaubert/maven-repo/raw/master/releases"}
+    }
+    dependencies {
+        compile 'com.shaubert.navigation:library:1.0'
+    }
+
+
 ## How-to
 
 ### Step 1
