@@ -8,7 +8,7 @@ Simplify intent creation, passing extras, activity animations and provides abstr
         maven{url "https://github.com/shaubert/maven-repo/raw/master/releases"}
     }
     dependencies {
-        compile 'com.shaubert.ui.jumper:library:1.0'
+        compile 'com.shaubert.ui.jumper:library:1.0.1'
     }
 
 ## How-to
@@ -40,7 +40,12 @@ Extend from `AbstractJumper` and your version of `Jumper` interface and implemen
     public class OpenNewJumper extends AbstractJumper implements MyJumper {
         @Override
         public Jump<ImageViewActivity.Args> toFullScreenImage() {
-            return new StartNewActivityJump<>(getStarter(), ImageViewActivity.class);
+            return to(ImageViewActivity.class);
+        }
+
+        @Override
+        <T extends Args> Jump<T> to(Class<?> actClass) {
+            return new StartNewActivityJump<>(getStarter(), actClass);
         }
     }
     

@@ -2,6 +2,6 @@ package com.shaubert.ui.jumper;
 
 public interface Jumper {
 
-    Jump<Args> to(Class<?> actClass);
+    <T extends Args> Jump<T> to(Class<?> actClass);
 
 }
