@@ -1,10 +1,10 @@
-package com.shaubert.navigation;
+package com.shaubert.ui.jumper;
 
 import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TransitionsBundle implements Parcelable {
+public class JumpAnimations implements Parcelable {
 
     public static final int DEFAULT = -1;
 
@@ -13,7 +13,7 @@ public class TransitionsBundle implements Parcelable {
     private int newActExit = DEFAULT;
     private int curActEnter = DEFAULT;
 
-    public TransitionsBundle() {
+    public JumpAnimations() {
     }
 
     public int getNewActEnter() {
@@ -81,20 +81,20 @@ public class TransitionsBundle implements Parcelable {
         dest.writeInt(this.curActEnter);
     }
 
-    private TransitionsBundle(Parcel in) {
+    private JumpAnimations(Parcel in) {
         this.newActEnter = in.readInt();
         this.curActExit = in.readInt();
         this.newActExit = in.readInt();
         this.curActEnter = in.readInt();
     }
 
-    public static Creator<TransitionsBundle> CREATOR = new Creator<TransitionsBundle>() {
-        public TransitionsBundle createFromParcel(Parcel source) {
-            return new TransitionsBundle(source);
+    public static Creator<JumpAnimations> CREATOR = new Creator<JumpAnimations>() {
+        public JumpAnimations createFromParcel(Parcel source) {
+            return new JumpAnimations(source);
         }
 
-        public TransitionsBundle[] newArray(int size) {
-            return new TransitionsBundle[size];
+        public JumpAnimations[] newArray(int size) {
+            return new JumpAnimations[size];
         }
     };
 }

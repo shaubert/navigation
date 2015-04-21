@@ -1,10 +1,10 @@
-package com.shaubert.navigation;
+package com.shaubert.ui.jumper;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 
-public interface NavigationMethod<T extends Bundler> {
+public interface Jump<T extends Args> {
 
     void start();
 
@@ -22,10 +22,10 @@ public interface NavigationMethod<T extends Bundler> {
 
     Intent getIntent(Bundle extras);
 
-    NavigationMethod<T> setupActivityOptions(ActivityOptionsCompat activityOptions);
+    Jump<T> withActivityOptions(ActivityOptionsCompat activityOptions);
 
-    NavigationMethod<T> setupTransitions(int enter, int exit);
+    Jump<T> withAnimations(int enter, int exit);
 
-    NavigationMethod<T> setupTransitions(int newActEnter, int curActExit, int newActExit, int curActEnter);
+    Jump<T> withAnimations(int newActivityEnter, int curActivityExit, int newActivityExit, int curActivityEnter);
 
 }

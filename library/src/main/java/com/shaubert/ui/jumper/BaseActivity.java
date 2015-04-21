@@ -1,4 +1,4 @@
-package com.shaubert.navigation;
+package com.shaubert.ui.jumper;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -34,11 +34,11 @@ public class BaseActivity extends ActionBarActivity {
             return;
         }
 
-        if (intent.hasExtra(NavExtras.CLEAN_UP_TASK_AND_FINISH_EXTRA)) {
+        if (intent.hasExtra(Extras.CLEAN_UP_TASK_AND_FINISH_EXTRA)) {
             finish();
         }
-        if (intent.hasExtra(NavExtras.OPEN_INTENT_EXTRA)) {
-            Intent openIntent = intent.getParcelableExtra(NavExtras.OPEN_INTENT_EXTRA);
+        if (intent.hasExtra(Extras.OPEN_INTENT_EXTRA)) {
+            Intent openIntent = intent.getParcelableExtra(Extras.OPEN_INTENT_EXTRA);
             if (openIntent != null) {
                 startActivity(openIntent);
             }
@@ -80,11 +80,11 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     protected boolean isUseUpAsFinish() {
-        return getIntent() != null && getIntent().getBooleanExtra(NavExtras.UP_AS_FINISH_NAVIGATION_EXTRA, false);
+        return getIntent() != null && getIntent().getBooleanExtra(Extras.UP_AS_FINISH_NAVIGATION_EXTRA, false);
     }
 
     protected boolean isSuppressUpNavigationInIntent() {
-        return getIntent() != null && getIntent().getBooleanExtra(NavExtras.SUPPRESS_UP_NAVIGATION_EXTRA, false);
+        return getIntent() != null && getIntent().getBooleanExtra(Extras.SUPPRESS_UP_NAVIGATION_EXTRA, false);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class BaseActivity extends ActionBarActivity {
 
     private void handleActivityStart(Intent intent, int requestCode) {
         if (isUseUpAsFinish()) {
-            intent.putExtra(NavExtras.UP_AS_FINISH_NAVIGATION_EXTRA, true);
+            intent.putExtra(Extras.UP_AS_FINISH_NAVIGATION_EXTRA, true);
         }
     }
 
@@ -128,9 +128,9 @@ public class BaseActivity extends ActionBarActivity {
         super.onPause();
 
         if (isFinishing()) {
-            TransitionsBundle transition = NavExtras.getBackwardTransition(this);
-            if (transition != null) {
-                transition.setupForBackwardTransition(this);
+            JumpAnimations animations = Extras.getBackwardAnimations(this);
+            if (animations != null) {
+                animations.setupForBackwardTransition(this);
             }
         }
     }

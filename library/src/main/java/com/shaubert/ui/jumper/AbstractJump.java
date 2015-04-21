@@ -1,4 +1,4 @@
-package com.shaubert.navigation;
+package com.shaubert.ui.jumper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,15 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 
-public abstract class AbstractNavigationMethod<T extends Bundler> implements NavigationMethod<T> {
+public abstract class AbstractJump<T extends Args> implements Jump<T> {
 
-    private ActivityStarter activityStarter;
+    private Starter starter;
     private Class<?> actClass;
-    private TransitionsBundle transitionsBundle;
+    private JumpAnimations jumpAnimations;
     private ActivityOptionsCompat activityOptions;
 
-    protected AbstractNavigationMethod(ActivityStarter activityStarter, Class<?> actClass) {
-        this.activityStarter = activityStarter;
+    protected AbstractJump(Starter starter, Class<?> actClass) {
+        this.starter = starter;
         this.actClass = actClass;
     }
 
@@ -59,20 +59,20 @@ public abstract class AbstractNavigationMethod<T extends Bundler> implements Nav
 
     @Override
     public void startForResult(int requestCode, Bundle extras) {
-        if (transitionsBundle != null) {
-            extras = NavExtras.setupBackwardTransition(extras, transitionsBundle);
+        if (jumpAnimations != null) {
+            extras = Extras.setupBackwardAnimations(extras, jumpAnimations);
         }
         Intent intent = createIntent(extras);
         Bundle activityOptionsBundle = activityOptions == null ? null : activityOptions.toBundle();
         if (requestCode >= 0) {
-            activityStarter.startActivityForResult(intent, requestCode, activityOptionsBundle);
+            starter.startActivityForResult(intent, requestCode, activityOptionsBundle);
         } else {
-            activityStarter.startActivity(intent, activityOptionsBundle);
+            starter.startActivity(intent, activityOptionsBundle);
         }
-        if (transitionsBundle != null) {
-            Context context = activityStarter.getContext();
+        if (jumpAnimations != null) {
+            Context context = starter.getContext();
             if (context instanceof Activity) {
-                transitionsBundle.setupForForwardTransition((Activity) context);
+                jumpAnimations.setupForForwardTransition((Activity) context);
             }
         }
     }
@@ -88,7 +88,7 @@ public abstract class AbstractNavigationMethod<T extends Bundler> implements Nav
     }
 
     protected Intent createIntent(Bundle extras) {
-        Intent intent = new Intent(activityStarter.getContext(), actClass);
+        Intent intent = new Intent(starter.getContext(), actClass);
         if (extras != null) {
             intent.putExtras(extras);
         }
@@ -99,25 +99,25 @@ public abstract class AbstractNavigationMethod<T extends Bundler> implements Nav
     protected abstract void setupIntent(Intent intent);
 
     @Override
-    public NavigationMethod<T> setupTransitions(int enter, int exit) {
-        transitionsBundle = new TransitionsBundle();
-        transitionsBundle.setNewActEnter(enter);
-        transitionsBundle.setCurActExit(exit);
+    public Jump<T> withAnimations(int enter, int exit) {
+        jumpAnimations = new JumpAnimations();
+        jumpAnimations.setNewActEnter(enter);
+        jumpAnimations.setCurActExit(exit);
         return this;
     }
 
     @Override
-    public NavigationMethod<T> setupTransitions(int newActEnter, int curActExit, int newActExit, int curActEnter) {
-        transitionsBundle = new TransitionsBundle();
-        transitionsBundle.setNewActEnter(newActEnter);
-        transitionsBundle.setCurActExit(curActExit);
-        transitionsBundle.setNewActExit(newActExit);
-        transitionsBundle.setCurActEnter(curActEnter);
+    public Jump<T> withAnimations(int newActivityEnter, int curActivityExit, int newActivityExit, int curActivityEnter) {
+        jumpAnimations = new JumpAnimations();
+        jumpAnimations.setNewActEnter(newActivityEnter);
+        jumpAnimations.setCurActExit(curActivityExit);
+        jumpAnimations.setNewActExit(newActivityExit);
+        jumpAnimations.setCurActEnter(curActivityEnter);
         return this;
     }
 
     @Override
-    public NavigationMethod<T> setupActivityOptions(ActivityOptionsCompat activityOptions) {
+    public Jump<T> withActivityOptions(ActivityOptionsCompat activityOptions) {
         this.activityOptions = activityOptions;
         return this;
     }

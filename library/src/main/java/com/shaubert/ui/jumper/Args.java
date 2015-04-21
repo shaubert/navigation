@@ -1,4 +1,4 @@
-package com.shaubert.navigation;
+package com.shaubert.ui.jumper;
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Extend your class from {@link com.shaubert.navigation.Bundler Bundler} to convert your non-transient fields into
- * {@link android.os.Bundle Bundle} and vice versa. Look at list of supported types: {@link com.shaubert.navigation.Bundler.Type Types}.
+ * Extend your class from {@link Args Bundler} to convert your non-transient fields into
+ * {@link android.os.Bundle Bundle} and vice versa. Look at list of supported types: {@link Args.Type Types}.
  */
-public class Bundler {
+public class Args {
 
     private static class BundlerCache {
         private static Map<Class, Map<Field, Type>> cache = new HashMap<>();
@@ -88,7 +88,7 @@ public class Bundler {
     }
 
     private Map<Field, Type> getFieldsMap() {
-        Class<? extends Bundler> cls = getClass();
+        Class<? extends Args> cls = getClass();
         Map<Field, Type> typeMap = BundlerCache.get(cls);
         if (typeMap != null) {
             return typeMap;
@@ -368,10 +368,6 @@ public class Bundler {
         }
 
         return out;
-    }
-
-    public final static class VoidBundle extends Bundler {
-        private VoidBundle() { }
     }
 
 }

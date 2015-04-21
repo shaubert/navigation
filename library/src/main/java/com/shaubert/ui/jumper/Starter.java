@@ -1,4 +1,4 @@
-package com.shaubert.navigation;
+package com.shaubert.ui.jumper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
-public class ActivityStarter {
+public class Starter {
     private Context context;
     private Fragment fragment;
     private android.support.v4.app.Fragment supportFragment;
@@ -16,19 +16,19 @@ public class ActivityStarter {
     private int enterAnim = -1;
     private int exitAnim = -1;
 
-    public ActivityStarter(Context context) {
+    public Starter(Context context) {
         this.context = context;
     }
 
-    public ActivityStarter(Fragment fragment) {
+    public Starter(Fragment fragment) {
         this.fragment = fragment;
     }
 
-    public ActivityStarter(android.support.v4.app.Fragment fragment) {
+    public Starter(android.support.v4.app.Fragment fragment) {
         this.supportFragment = fragment;
     }
 
-    public ActivityStarter(ActivityStarter starter) {
+    public Starter(Starter starter) {
         this.fragment = starter.fragment;
         this.context = starter.context;
         this.enterAnim = starter.enterAnim;
@@ -66,7 +66,7 @@ public class ActivityStarter {
         }
     }
 
-    public NavigationController getNavigationController() {
+    public Jumper getNavigationController() {
         if (fragment instanceof NavigationControllerHolder) {
             return  ((NavigationControllerHolder) fragment).getNavigationController();
         } else if (context instanceof NavigationControllerHolder) {
