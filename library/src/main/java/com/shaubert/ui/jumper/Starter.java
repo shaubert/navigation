@@ -9,30 +9,31 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
 public class Starter {
+    private Jumper jumper;
     private Context context;
     private Fragment fragment;
     private android.support.v4.app.Fragment supportFragment;
 
-    private int enterAnim = -1;
-    private int exitAnim = -1;
-
-    public Starter(Context context) {
+    public Starter(Jumper jumper, Context context) {
+        this.jumper = jumper;
         this.context = context;
     }
 
-    public Starter(Fragment fragment) {
+    public Starter(Jumper jumper, Fragment fragment) {
+        this.jumper = jumper;
         this.fragment = fragment;
     }
 
-    public Starter(android.support.v4.app.Fragment fragment) {
+    public Starter(Jumper jumper, android.support.v4.app.Fragment fragment) {
+        this.jumper = jumper;
         this.supportFragment = fragment;
     }
 
     public Starter(Starter starter) {
-        this.fragment = starter.fragment;
         this.context = starter.context;
-        this.enterAnim = starter.enterAnim;
-        this.exitAnim = starter.exitAnim;
+        this.fragment = starter.fragment;
+        this.supportFragment = starter.supportFragment;
+        this.jumper = starter.jumper;
     }
 
     @SuppressLint("NewApi")
@@ -54,7 +55,6 @@ public class Starter {
                 }
             }
         }
-        setupAnimations();
     }
 
     @SuppressLint("NewApi")
@@ -66,37 +66,21 @@ public class Starter {
         }
     }
 
-    public Jumper getNavigationController() {
-        if (fragment instanceof NavigationControllerHolder) {
-            return  ((NavigationControllerHolder) fragment).getNavigationController();
-        } else if (context instanceof NavigationControllerHolder) {
-            return ((NavigationControllerHolder) context).getNavigationController();
-        }
-        return null;
-    }
-
-    public void overridePendingTransition(int enterAnim, int exitAnim) {
-        this.enterAnim = enterAnim;
-        this.exitAnim = exitAnim;
-    }
-
-    public void restorePendingTransition() {
-        enterAnim = -1;
-        exitAnim = -1;
-    }
-
-    private void setupAnimations() {
-        if (enterAnim != -1 || exitAnim != -1) {
-            Activity activity;
-            if (context != null && context instanceof Activity) {
+    public Config getCurrentConfig() {
+        Activity activity = null;
+        if (context != null) {
+            if (context instanceof Activity) {
                 activity = (Activity) context;
-            } else {
-                activity = getActivityFromFragment();
             }
-            if (activity != null) {
-                activity.overridePendingTransition(enterAnim, exitAnim);
-            }
+        } else {
+            activity = getActivityFromFragment();
         }
+
+        if (activity != null) {
+            return jumper.getConfig(activity.getIntent());
+        }
+
+        return null;
     }
 
     @SuppressLint("NewApi")
@@ -117,7 +101,6 @@ public class Starter {
                 }
             }
         }
-        setupAnimations();
     }
 
     public Context getContext() {
@@ -135,7 +118,7 @@ public class Starter {
         }
     }
 
-    private void finishActivity(Activity activity) {
+    protected void finishActivity(Activity activity) {
         activity.finish();
     }
 }

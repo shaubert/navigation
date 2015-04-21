@@ -1,8 +1,14 @@
 apply plugin: 'com.android.library'
 
+repositories {
+    maven{url "https://github.com/shaubert/maven-repo/raw/master/releases"}
+}
+
 dependencies {
     compile "com.android.support:support-v4:22.0.0"
     compile 'com.android.support:appcompat-v7:22.0.0'
+
+    compile 'com.shaubert.lifecycle.objects:library:1.0'
 }
 
 android {

@@ -13,7 +13,27 @@ public class JumpAnimations implements Parcelable {
     private int newActExit = DEFAULT;
     private int curActEnter = DEFAULT;
 
-    public JumpAnimations() {
+    public JumpAnimations(int newActEnter, int curActExit, int newActExit, int curActEnter) {
+        this.newActEnter = newActEnter;
+        this.curActExit = curActExit;
+        this.newActExit = newActExit;
+        this.curActEnter = curActEnter;
+    }
+
+    public JumpAnimations(int enter, int exit) {
+        newActEnter = enter;
+        curActExit = exit;
+    }
+
+    private JumpAnimations(Builder builder) {
+        setNewActEnter(builder.newActEnter);
+        setCurActExit(builder.curActExit);
+        setNewActExit(builder.newActExit);
+        setCurActEnter(builder.curActEnter);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public int getNewActEnter() {
@@ -97,4 +117,39 @@ public class JumpAnimations implements Parcelable {
             return new JumpAnimations[size];
         }
     };
+
+
+    public static final class Builder {
+        private int newActEnter;
+        private int curActExit;
+        private int newActExit;
+        private int curActEnter;
+
+        private Builder() {
+        }
+
+        public Builder newActEnter(int newActEnter) {
+            this.newActEnter = newActEnter;
+            return this;
+        }
+
+        public Builder curActExit(int curActExit) {
+            this.curActExit = curActExit;
+            return this;
+        }
+
+        public Builder newActExit(int newActExit) {
+            this.newActExit = newActExit;
+            return this;
+        }
+
+        public Builder curActEnter(int curActEnter) {
+            this.curActEnter = curActEnter;
+            return this;
+        }
+
+        public JumpAnimations build() {
+            return new JumpAnimations(this);
+        }
+    }
 }

@@ -10,8 +10,11 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
 
     private Starter starter;
     private Class<?> actClass;
-    private JumpAnimations jumpAnimations;
+
     private ActivityOptionsCompat activityOptions;
+    private Bundle extras;
+    private T args;
+    private Config config;
 
     protected AbstractJump(Starter starter, Class<?> actClass) {
         this.starter = starter;
@@ -23,45 +26,38 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
     }
 
     @Override
-    public void start() {
-        start((Bundle) null);
+    public Jump<T> withExtras(Bundle extras) {
+        this.extras = extras;
+        return this;
     }
 
     @Override
-    public void start(T extras) {
-        if (extras == null) {
-            start((Bundle) null);
-            return;
-        }
-
-        start(extras.toBundle());
+    public Jump<T> withArgs(T args) {
+        this.args = args;
+        return this;
     }
 
     @Override
-    public void start(Bundle extras) {
-        startForResult(-1, extras);
+    public Jump<T> withConfig(Config config) {
+        this.config = config;
+        return null;
     }
 
     @Override
-    public void startForResult(int requestCode) {
-        startForResult(requestCode, (Bundle) null);
+    public Jump<T> withActivityOptions(ActivityOptionsCompat activityOptions) {
+        this.activityOptions = activityOptions;
+        return this;
+    }
+
+
+    @Override
+    public void jump() {
+        jumpForResult(-1);
     }
 
     @Override
-    public void startForResult(int requestCode, T extras) {
-        if (extras == null) {
-            startForResult(requestCode, (Bundle) null);
-            return;
-        }
-
-        startForResult(requestCode, extras.toBundle());
-    }
-
-    @Override
-    public void startForResult(int requestCode, Bundle extras) {
-        if (jumpAnimations != null) {
-            extras = Extras.setupBackwardAnimations(extras, jumpAnimations);
-        }
+    public void jumpForResult(int requestCode) {
+        Bundle extras = createExtras();
         Intent intent = createIntent(extras);
         Bundle activityOptionsBundle = activityOptions == null ? null : activityOptions.toBundle();
         if (requestCode >= 0) {
@@ -69,22 +65,53 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
         } else {
             starter.startActivity(intent, activityOptionsBundle);
         }
-        if (jumpAnimations != null) {
-            Context context = starter.getContext();
-            if (context instanceof Activity) {
-                jumpAnimations.setupForForwardTransition((Activity) context);
+
+        if (config != null) {
+            JumpAnimations animations = config.getJumpAnimations();
+            if (animations != null) {
+                Context context = starter.getContext();
+                if (context instanceof Activity) {
+                    animations.setupForForwardTransition((Activity) context);
+                }
             }
         }
     }
 
-    @Override
-    public Intent getIntent() {
-        return createIntent(null);
+    public Bundle createExtras() {
+        Bundle result = null;
+        if (extras != null) {
+            result = new Bundle();
+            result.putAll(extras);
+        }
+
+        if (args != null) {
+            result = args.toBundle(result);
+        }
+
+        Config parentConfig = getParentConfig();
+        if (config != null) {
+            if (parentConfig != null) {
+                config.mergeParentConfig(parentConfig);
+            }
+            result = config.toBundle(result);
+        } else if (parentConfig != null) {
+            result = parentConfig.toBundle(result);
+        }
+
+        return result;
+    }
+
+    private Config getParentConfig() {
+        Config currentConfig = starter.getCurrentConfig();
+        if (currentConfig != null) {
+            return currentConfig.createChildAcitivityConfig();
+        }
+        return null;
     }
 
     @Override
-    public Intent getIntent(Bundle extras) {
-        return createIntent(extras);
+    public Intent getIntent() {
+        return createIntent(createExtras());
     }
 
     protected Intent createIntent(Bundle extras) {
@@ -97,28 +124,4 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
     }
 
     protected abstract void setupIntent(Intent intent);
-
-    @Override
-    public Jump<T> withAnimations(int enter, int exit) {
-        jumpAnimations = new JumpAnimations();
-        jumpAnimations.setNewActEnter(enter);
-        jumpAnimations.setCurActExit(exit);
-        return this;
-    }
-
-    @Override
-    public Jump<T> withAnimations(int newActivityEnter, int curActivityExit, int newActivityExit, int curActivityEnter) {
-        jumpAnimations = new JumpAnimations();
-        jumpAnimations.setNewActEnter(newActivityEnter);
-        jumpAnimations.setCurActExit(curActivityExit);
-        jumpAnimations.setNewActExit(newActivityExit);
-        jumpAnimations.setCurActEnter(curActivityEnter);
-        return this;
-    }
-
-    @Override
-    public Jump<T> withActivityOptions(ActivityOptionsCompat activityOptions) {
-        this.activityOptions = activityOptions;
-        return this;
-    }
 }

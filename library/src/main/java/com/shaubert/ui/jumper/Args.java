@@ -1,5 +1,6 @@
 package com.shaubert.ui.jumper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.SparseArray;
@@ -18,6 +19,8 @@ import java.util.Map;
  * {@link android.os.Bundle Bundle} and vice versa. Look at list of supported types: {@link Args.Type Types}.
  */
 public class Args {
+
+    public static final String ARGS_CLASS = "__args_class";
 
     private static class BundlerCache {
         private static Map<Class, Map<Field, Type>> cache = new HashMap<>();
@@ -66,6 +69,26 @@ public class Args {
         PARCELABLE_ARRAY_LIST,
         SPARSE_PARCELABLE_ARRAY,
         SERIALIZABLE,
+    }
+
+    public static <T extends Args> T fromArgs(Intent intent) {
+        if (intent == null) return null;
+        return fromArgs(intent.getExtras());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Args> T fromArgs(Bundle bundle) {
+        if (bundle == null) return null;
+
+        String className = bundle.getString(Config.ARGS_CLASS);
+        try {
+            Class<T> tClass = (Class<T>) Class.forName(className);
+            T t = tClass.newInstance();
+            t.fromBundle(bundle);
+            return t;
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
     public void fromBundle(Bundle bundle) {
@@ -366,6 +389,8 @@ public class Args {
                 throw new RuntimeException(e);
             }
         }
+
+        out.putString(ARGS_CLASS, getClass().getName());
 
         return out;
     }

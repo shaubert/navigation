@@ -8,7 +8,7 @@ Simplify intent creation, passing extras, activity animations and provides abstr
         maven{url "https://github.com/shaubert/maven-repo/raw/master/releases"}
     }
     dependencies {
-        compile 'com.shaubert.ui.jumper:library:1.0.1'
+        compile 'com.shaubert.ui.jumper:library:1.0.2'
     }
 
 ## How-to
@@ -49,10 +49,10 @@ Extend from `AbstractJumper` and your version of `Jumper` interface and implemen
         }
     }
     
-`StartNewActivityJump` is a default implementation of `Jump`. You can also check `SingleTopJump`, `ClearTopJump`, `CloseAppJump` and others. You can easily create your own jumps.
+`StartNewActivityJump` is a default implementation of `Jump`. You can also check `SingleTopJump` and `ClearTopJump`. You can easily create your own jumps.
 
 ### Step 3
 
-Look at `BaseActivity` and copy implementation to your root activity class, or use `BaseActivity` as root. That's all. In your activities and fragments create `Jumper` and use it to navigate from one screen to another, not `Intent`s.
+Look at `ExampleActivity` and copy implementation to your root activity class. That's all. In your activities and fragments create `Jumper` and use it to navigate from one screen to another.
 
 If you like factories also implement `JumperFactory<JUMPER>`.
