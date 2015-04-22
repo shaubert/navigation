@@ -101,7 +101,7 @@ public abstract class AbstractJumper implements Jumper {
 
     @Override
     public boolean isPaused() {
-        return false;
+        return paused;
     }
 
 }
