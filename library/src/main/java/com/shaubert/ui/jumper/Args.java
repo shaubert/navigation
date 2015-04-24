@@ -123,7 +123,7 @@ public class Args {
             if (Modifier.isTransient(field.getModifiers())) continue;
 
             field.setAccessible(true);
-            Type type = getType(field.getClass());
+            Type type = getType(field.getType());
             BundlerCache.put(cls, field, type);
         }
 
