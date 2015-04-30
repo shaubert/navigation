@@ -10,6 +10,7 @@ public abstract class AbstractJumper implements Jumper {
 
     private Starter starter;
     private boolean paused = true;
+    private boolean attached;
 
     public AbstractJumper(Context context) {
         this.starter = new Starter(this, context);
@@ -58,6 +59,21 @@ public abstract class AbstractJumper implements Jumper {
         if (openIntentAfterStart != null) {
             starter.startActivity(openIntentAfterStart, null);
         }
+    }
+
+    @Override
+    public boolean isAttached() {
+        return attached;
+    }
+
+    @Override
+    public void dispatchOnAttach() {
+        attached = true;
+    }
+
+    @Override
+    public void dispatchOnDetach() {
+        attached = false;
     }
 
     @Override
