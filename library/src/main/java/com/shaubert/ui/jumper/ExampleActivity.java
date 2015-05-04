@@ -84,7 +84,7 @@ public class ExampleActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        getJumper().dispatchOnPause();
+        getJumper().dispatchOnPause(isFinishing());
     }
 
     @Override
