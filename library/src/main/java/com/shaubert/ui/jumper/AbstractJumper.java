@@ -95,6 +95,11 @@ public abstract class AbstractJumper implements Jumper {
     }
 
     @Override
+    @Deprecated
+    public void dispatchOnPause() {
+    }
+
+    @Override
     public void dispatchOnPause(boolean isFinishing) {
         paused = true;
 
