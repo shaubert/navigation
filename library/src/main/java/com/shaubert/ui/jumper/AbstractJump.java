@@ -40,7 +40,7 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
     @Override
     public Jump<T> withConfig(Config config) {
         this.config = config;
-        return null;
+        return this;
     }
 
     @Override
