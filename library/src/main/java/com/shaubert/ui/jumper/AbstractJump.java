@@ -88,14 +88,22 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
             result = args.toBundle(result);
         }
 
-        Config parentConfig = getParentConfig();
+        Config resultConfig = getParentConfig();
         if (config != null) {
-            if (parentConfig != null) {
-                config.mergeParentConfig(parentConfig);
+            if (resultConfig != null) {
+                config.mergeParentConfig(resultConfig);
             }
-            result = config.toBundle(result);
-        } else if (parentConfig != null) {
-            result = parentConfig.toBundle(result);
+            resultConfig = config;
+        }
+
+        if (resultConfig != null) {
+            Bundle configBundle = new Bundle();
+            resultConfig.toBundle(configBundle);
+
+            if (result == null) {
+                result = new Bundle();
+            }
+            result.putBundle(Config.CONFIG_ARGS, configBundle);
         }
 
         return result;

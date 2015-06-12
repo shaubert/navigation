@@ -41,7 +41,7 @@ public abstract class AbstractJumper implements Jumper {
         Bundle extras = intent.getExtras();
         if (extras == null) return null;
 
-        Bundle bundle = extras.getBundle(Config.JUMP_ARGS);
+        Bundle bundle = extras.getBundle(Config.CONFIG_ARGS);
         if (bundle == null) return null;
 
         return Args.fromArgs(bundle);

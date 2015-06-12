@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 public class Config extends Args {
 
-    public static final String JUMP_ARGS = "__config_args";
+    static String CONFIG_ARGS = "__config_args";
 
     protected Intent openIntentAfterStart;
     protected boolean finishAfterStart;
@@ -71,21 +71,6 @@ public class Config extends Args {
         if (config.isUseUpInActionBarAsFinish()) {
             setUseUpInActionBarAsFinish(true);
         }
-    }
-
-    @Override
-    public final void fromBundle(Bundle bundle) {
-        if (bundle == null) return;
-        super.fromBundle(bundle.getBundle(JUMP_ARGS));
-    }
-
-    @Override
-    public final Bundle toBundle(Bundle out) {
-        if (out == null) {
-            out = new Bundle();
-        }
-        out.putBundle(JUMP_ARGS, super.toBundle());
-        return out;
     }
 
     @Override
