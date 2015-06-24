@@ -308,20 +308,26 @@ public class Args {
                 return Type.SERIALIZABLE;
             }
         } else {
-            if (cls == Integer.class) {
-                return Type.INTEGER;
+            if (CharSequence.class.isAssignableFrom(cls)) {
+                return Type.CHAR_SEQUENCE;
+            } else if (Number.class.isAssignableFrom(cls)) {
+                if (cls == Integer.class){
+                    return Type.INTEGER;
+                } else if (cls == Byte.class) {
+                    return Type.BYTE;
+                } else if (cls == Float.class) {
+                    return Type.FLOAT;
+                } else if (cls == Double.class) {
+                    return Type.DOUBLE;
+                } else if (cls == Long.class) {
+                    return Type.LONG;
+                } else if (cls == Short.class) {
+                    return Type.SHORT;
+                } else {
+                    return Type.SERIALIZABLE;
+                }
             } else if (cls == Boolean.class) {
                 return Type.BOOLEAN;
-            } else if (cls == Byte.class) {
-                return Type.BYTE;
-            } else if (cls == Float.class) {
-                return Type.FLOAT;
-            } else if (cls == Double.class) {
-                return Type.DOUBLE;
-            } else if (cls == Long.class) {
-                return Type.LONG;
-            } else if (cls == Short.class) {
-                return Type.SHORT;
             } else {
                 if (cls == ArrayList.class) {
                     java.lang.reflect.Type[] typeArguments = ((ParameterizedType) cls.getGenericSuperclass()).getActualTypeArguments();
