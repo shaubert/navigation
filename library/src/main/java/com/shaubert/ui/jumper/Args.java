@@ -10,9 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Extend your class from {@link Args Bundler} to convert your non-transient fields into
@@ -117,7 +115,7 @@ public class Args {
             return typeMap;
         }
 
-        Field[] fields = cls.getDeclaredFields();
+        List<Field> fields = getAllFields(cls);
         for (Field field : fields) {
             if (field.isSynthetic()) continue;
             if (Modifier.isTransient(field.getModifiers())) continue;
@@ -128,6 +126,14 @@ public class Args {
         }
 
         return BundlerCache.get(cls);
+    }
+
+    private static List<Field> getAllFields(Class<?> type) {
+        List<Field> fields = new ArrayList<>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
     }
 
     private void readFromBundle(Field field, Bundle bundle) throws IllegalAccessException {
