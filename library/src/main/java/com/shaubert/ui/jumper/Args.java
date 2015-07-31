@@ -84,9 +84,9 @@ public class Args {
             T t = tClass.newInstance();
             t.fromBundle(bundle);
             return t;
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
-        return null;
     }
 
     public void fromBundle(Bundle bundle) {

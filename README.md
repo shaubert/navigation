@@ -8,7 +8,7 @@ Simplify intent creation, passing extras, activity animations and provides abstr
         maven{url "https://github.com/shaubert/maven-repo/raw/master/releases"}
     }
     dependencies {
-        compile 'com.shaubert.ui.jumper:library:1.0.8'
+        compile 'com.shaubert.ui.jumper:library:1.0.9'
     }
 
 ## How-to
