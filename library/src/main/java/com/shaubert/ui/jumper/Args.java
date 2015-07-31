@@ -3,6 +3,7 @@ package com.shaubert.ui.jumper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import java.io.Externalizable;
@@ -79,6 +80,10 @@ public class Args {
         if (bundle == null) return null;
 
         String className = bundle.getString(Config.ARGS_CLASS);
+        if (TextUtils.isEmpty(className)) {
+            return null;
+        }
+
         try {
             Class<T> tClass = (Class<T>) Class.forName(className);
             T t = tClass.newInstance();
