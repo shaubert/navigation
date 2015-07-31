@@ -108,7 +108,7 @@ public class JumpAnimations implements Parcelable {
         this.curActEnter = in.readInt();
     }
 
-    public static Creator<JumpAnimations> CREATOR = new Creator<JumpAnimations>() {
+    public static final Creator<JumpAnimations> CREATOR = new Creator<JumpAnimations>() {
         public JumpAnimations createFromParcel(Parcel source) {
             return new JumpAnimations(source);
         }
