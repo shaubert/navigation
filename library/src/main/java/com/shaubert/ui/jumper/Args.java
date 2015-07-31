@@ -23,9 +23,23 @@ public class Args {
 
     private static class BundlerCache {
         private static Map<Class, Map<Field, Type>> cache = new HashMap<>();
+        private static Map<Class, List<Class>> superClasses = new HashMap<>();
 
         private static Map<Field, Type> get(Class cls) {
             return cache.get(cls);
+        }
+
+        private static List<Class> getSuperClasses(Class cls) {
+            return superClasses.get(cls);
+        }
+
+        private static void put(Class cls, Class superClass) {
+            List<Class> classes = superClasses.get(cls);
+            if (classes == null) {
+                classes = new ArrayList<>();
+                superClasses.put(cls, classes);
+            }
+            classes.add(superClass);
         }
 
         private static void put(Class cls, Field field, Type type) {
@@ -99,63 +113,64 @@ public class Args {
             return;
         }
 
-        Map<Field, Type> fieldTypeMap = getFieldsMap();
-        if (fieldTypeMap == null || fieldTypeMap.isEmpty()) {
+        List<Class> classes = buildFieldsCache();
+        if (classes == null || classes.isEmpty()) {
             return;
         }
 
-        for (Field field : fieldTypeMap.keySet()) {
-            try {
-                readFromBundle(field, bundle);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+        for (Class aClass : classes) {
+            Map<Field, Type> fieldTypeMap = BundlerCache.get(aClass);
+            for (Field field : fieldTypeMap.keySet()) {
+                try {
+                    readFromBundle(aClass, field, bundle);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
-    private Map<Field, Type> getFieldsMap() {
+    private List<Class> buildFieldsCache() {
         Class<? extends Args> cls = getClass();
-        Map<Field, Type> typeMap = BundlerCache.get(cls);
-        if (typeMap != null) {
-            return typeMap;
+        List<Class> superClasses = BundlerCache.getSuperClasses(cls);
+        if (superClasses != null) {
+            return superClasses;
         }
 
-        List<Field> fields = getAllFields(cls);
-        for (Field field : fields) {
-            if (field.isSynthetic()) continue;
-            if (Modifier.isTransient(field.getModifiers())) continue;
+        for (Class<?> c = cls; c != null; c = c.getSuperclass()) {
+            Field[] fields = c.getDeclaredFields();
+            for (Field field : fields) {
+                if (field.isSynthetic()) continue;
+                if (Modifier.isTransient(field.getModifiers())) continue;
 
-            field.setAccessible(true);
-            Type type = getType(field.getType());
-            BundlerCache.put(cls, field, type);
+                field.setAccessible(true);
+                Type type = getType(field.getType());
+                BundlerCache.put(c, field, type);
+            }
+            Map<Field, Type> fieldTypeMap = BundlerCache.get(c);
+            if (fieldTypeMap != null && !fieldTypeMap.isEmpty()) {
+                BundlerCache.put(cls, c);
+            }
         }
 
-        return BundlerCache.get(cls);
+        return BundlerCache.getSuperClasses(cls);
     }
 
-    private static List<Field> getAllFields(Class<?> type) {
-        List<Field> fields = new ArrayList<>();
-        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
-        }
-        return fields;
-    }
-
-    private void readFromBundle(Field field, Bundle bundle) throws IllegalAccessException {
-        String name = getBundleEntryName(field);
+    private void readFromBundle(Class aClass, Field field, Bundle bundle) throws IllegalAccessException {
+        String name = getBundleEntryName(aClass, field);
         if (bundle.containsKey(name)) {
             field.set(this, bundle.get(name));
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void writeToBundle(Field field, Type type, Bundle bundle) throws IllegalAccessException {
+    private void writeToBundle(Class aClass, Field field, Type type, Bundle bundle) throws IllegalAccessException {
         Object value = field.get(this);
         if (value == null) {
             return;
         }
 
-        String name = getBundleEntryName(field);
+        String name = getBundleEntryName(aClass, field);
         switch (type) {
             case BOOLEAN:
                 bundle.putBoolean(name, (Boolean) value);
@@ -261,8 +276,8 @@ public class Args {
         }
     }
 
-    private String getBundleEntryName(Field field) {
-        return getClass().getSimpleName() + "-" + field.getName();
+    private String getBundleEntryName(Class aClass, Field field) {
+        return aClass.getName() + "-" + field.getName();
     }
 
     private Type getType(Class<?> cls) {
@@ -394,16 +409,19 @@ public class Args {
             out = new Bundle();
         }
 
-        Map<Field, Type> fieldTypeMap = getFieldsMap();
-        if (fieldTypeMap == null || fieldTypeMap.isEmpty()) {
+        List<Class> classes = buildFieldsCache();
+        if (classes == null || classes.isEmpty()) {
             return out;
         }
 
-        for (Map.Entry<Field, Type> entry : fieldTypeMap.entrySet()) {
-            try {
-                writeToBundle(entry.getKey(), entry.getValue(), out);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+        for (Class aClass : classes) {
+            Map<Field, Type> fieldTypeMap = BundlerCache.get(aClass);
+            for (Map.Entry<Field, Type> entry : fieldTypeMap.entrySet()) {
+                try {
+                    writeToBundle(aClass, entry.getKey(), entry.getValue(), out);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
