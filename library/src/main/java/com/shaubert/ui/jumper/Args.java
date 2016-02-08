@@ -8,9 +8,7 @@ import android.util.SparseArray;
 
 import java.io.Externalizable;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.*;
 import java.util.*;
 
 /**
@@ -21,19 +19,19 @@ public class Args {
 
     public static final String ARGS_CLASS = "__args_class";
 
-    private static class BundlerCache {
-        private static Map<Class, Map<Field, Type>> cache = new HashMap<>();
-        private static Map<Class, List<Class>> superClasses = new HashMap<>();
+    static class BundlerCache {
+        static Map<Class, Map<Field, Type>> cache = new HashMap<>();
+        static Map<Class, List<Class>> superClasses = new HashMap<>();
 
-        private static Map<Field, Type> get(Class cls) {
+        static Map<Field, Type> get(Class cls) {
             return cache.get(cls);
         }
 
-        private static List<Class> getSuperClasses(Class cls) {
+        static List<Class> getSuperClasses(Class cls) {
             return superClasses.get(cls);
         }
 
-        private static void put(Class cls, Class superClass) {
+        static void put(Class cls, Class superClass) {
             List<Class> classes = superClasses.get(cls);
             if (classes == null) {
                 classes = new ArrayList<>();
@@ -42,7 +40,7 @@ public class Args {
             classes.add(superClass);
         }
 
-        private static void put(Class cls, Field field, Type type) {
+        static void put(Class cls, Field field, Type type) {
             Map<Field, Type> map = cache.get(cls);
             if (map == null) {
                 map = new HashMap<>();
@@ -144,7 +142,7 @@ public class Args {
                 if (Modifier.isTransient(field.getModifiers())) continue;
 
                 field.setAccessible(true);
-                Type type = getType(field.getType());
+                Type type = getType(field.getType(), field);
                 BundlerCache.put(c, field, type);
             }
             Map<Field, Type> fieldTypeMap = BundlerCache.get(c);
@@ -280,9 +278,9 @@ public class Args {
         return aClass.getName() + "-" + field.getName();
     }
 
-    private Type getType(Class<?> cls) {
+    private Type getType(Class<?> cls, Field field) {
         if (cls.isArray()) {
-            Type compType = getType(cls.getComponentType());
+            Type compType = getType(cls.getComponentType(), field);
             switch (compType) {
                 case BOOLEAN:
                     return Type.BOOLEAN_ARRAY;
@@ -334,7 +332,9 @@ public class Args {
                 return Type.SERIALIZABLE;
             }
         } else {
-            if (CharSequence.class.isAssignableFrom(cls)) {
+            if (String.class.equals(cls)) {
+                return Type.STRING;
+            } else if (CharSequence.class.isAssignableFrom(cls)) {
                 return Type.CHAR_SEQUENCE;
             } else if (Number.class.isAssignableFrom(cls)) {
                 if (cls == Integer.class){
@@ -355,26 +355,44 @@ public class Args {
             } else if (cls == Boolean.class) {
                 return Type.BOOLEAN;
             } else {
-                if (cls == ArrayList.class) {
-                    java.lang.reflect.Type[] typeArguments = ((ParameterizedType) cls.getGenericSuperclass()).getActualTypeArguments();
-                    if (typeArguments.length == 0) {
+                if (cls == Collection.class
+                        || cls == List.class
+                        || cls == AbstractCollection.class
+                        || cls == AbstractList.class
+                        || cls == ArrayList.class) {
+
+                    java.lang.reflect.Type genericType = field.getGenericType();
+                    if (!(genericType instanceof ParameterizedType)) {
                         return Type.SERIALIZABLE;
-                    } else {
-                        Class<?> genericClass = (Class<?>) typeArguments[0];
-                        Type genType = getType(genericClass);
-                        switch (genType) {
-                            case INTEGER:
-                                return Type.INTEGER_ARRAY_LIST;
-                            case STRING:
-                                return Type.STRING_ARRAY_LIST;
-                            case CHAR_SEQUENCE:
-                                return Type.CHAR_SEQUENCE_ARRAY_LIST;
-                            case PARCELABLE:
-                                return Type.PARCELABLE_ARRAY_LIST;
-                            case SERIALIZABLE:
-                            default:
-                                return Type.SERIALIZABLE;
-                        }
+                    }
+
+                    java.lang.reflect.Type[] genericArguments = ((ParameterizedType) genericType).getActualTypeArguments();
+                    if (genericArguments.length == 0) {
+                        return Type.SERIALIZABLE;
+                    }
+
+                    if (genericArguments[0] instanceof TypeVariable) {
+                        return Type.SERIALIZABLE;
+                    }
+
+                    if (!(genericArguments[0] instanceof Class)) {
+                        return Type.SERIALIZABLE;
+                    }
+
+                    Class<?> genericClass = (Class<?>) genericArguments[0];
+                    Type genType = getType(genericClass, field);
+                    switch (genType) {
+                        case INTEGER:
+                            return Type.INTEGER_ARRAY_LIST;
+                        case STRING:
+                            return Type.STRING_ARRAY_LIST;
+                        case CHAR_SEQUENCE:
+                            return Type.CHAR_SEQUENCE_ARRAY_LIST;
+                        case PARCELABLE:
+                            return Type.PARCELABLE_ARRAY_LIST;
+                        case SERIALIZABLE:
+                        default:
+                            return Type.SERIALIZABLE;
                     }
                 } else if (cls == SparseArray.class) {
                     java.lang.reflect.Type[] typeArguments = ((ParameterizedType) cls.getGenericSuperclass()).getActualTypeArguments();
