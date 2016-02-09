@@ -190,7 +190,7 @@ public class Args {
                 bundle.putCharSequenceArray(name, (CharSequence[]) value);
                 return;
             case CHAR_SEQUENCE_ARRAY_LIST:
-                bundle.putCharSequenceArrayList(name, (ArrayList<CharSequence>) value);
+                bundle.putCharSequenceArrayList(name, convertToArrayList(value));
                 return;
 
             case BYTE:
@@ -214,7 +214,7 @@ public class Args {
                 bundle.putIntArray(name, (int[]) value);
                 return;
             case INTEGER_ARRAY_LIST:
-                bundle.putIntegerArrayList(name, (ArrayList<Integer>) value);
+                bundle.putIntegerArrayList(name, convertToArrayList(value));
                 return;
 
             case FLOAT:
@@ -245,7 +245,7 @@ public class Args {
                 bundle.putStringArray(name, (String[]) value);
                 return;
             case STRING_ARRAY_LIST:
-                bundle.putStringArrayList(name, (ArrayList<String>) value);
+                bundle.putStringArrayList(name, convertToArrayList(value));
                 return;
 
             case BUNDLE:
@@ -259,7 +259,7 @@ public class Args {
                 bundle.putParcelableArray(name, (Parcelable[]) value);
                 return;
             case PARCELABLE_ARRAY_LIST:
-                bundle.putParcelableArrayList(name, (ArrayList<Parcelable>) value);
+                bundle.putParcelableArrayList(name, convertToArrayList(value));
                 return;
             case SPARSE_PARCELABLE_ARRAY:
                 bundle.putSparseParcelableArray(name, (SparseArray<Parcelable>) value);
@@ -272,6 +272,21 @@ public class Args {
             default:
                 throw new IllegalArgumentException("unable to handle type: " + type);
         }
+    }
+
+    private static ArrayList convertToArrayList(Object value) {
+        if (value instanceof ArrayList) {
+            return (ArrayList) value;
+        }
+
+        ArrayList list = new ArrayList();
+        if (value instanceof Collection) {
+            list.addAll((Collection) value);
+        } else {
+            throw new IllegalArgumentException("Unable to convert to ArrayList value: " + value);
+        }
+
+        return list;
     }
 
     private String getBundleEntryName(Class aClass, Field field) {
