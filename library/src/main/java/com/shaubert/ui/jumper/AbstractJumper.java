@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 
 public abstract class AbstractJumper implements Jumper {
@@ -78,7 +79,7 @@ public abstract class AbstractJumper implements Jumper {
     }
 
     @Override
-    public void dispatchOnCreate(Bundle bundle) {
+    public void dispatchOnCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         Context context = starter.getContext();
         if (context instanceof Activity) {
             handleIntent(((Activity) context).getIntent());
@@ -92,11 +93,6 @@ public abstract class AbstractJumper implements Jumper {
     @Override
     public void dispatchOnResume() {
         paused = false;
-    }
-
-    @Override
-    @Deprecated
-    public void dispatchOnPause() {
     }
 
     @Override

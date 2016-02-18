@@ -3,14 +3,14 @@ package com.shaubert.ui.jumper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 /**
  * Use as a template for your root activity
  */
-public class ExampleActivity extends ActionBarActivity {
+class ExampleActivity extends AppCompatActivity {
 
     private Jumper jumper;
     private Config config = new Config();
@@ -19,7 +19,7 @@ public class ExampleActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getJumper().dispatchOnCreate(savedInstanceState);
+        getJumper().dispatchOnCreate(savedInstanceState, null);
         setupConfig(getIntent());
 
         onNewIntent(getIntent());
