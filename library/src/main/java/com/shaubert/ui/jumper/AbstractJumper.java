@@ -114,7 +114,10 @@ public abstract class AbstractJumper implements Jumper {
 
     @Override
     public void dispatchOnSaveInstanceState(@NonNull Bundle bundle) {
+    }
 
+    @Override
+    public void dispatchOnSavePersistentState(@NonNull PersistableBundle outPersistentState) {
     }
 
     @Override
