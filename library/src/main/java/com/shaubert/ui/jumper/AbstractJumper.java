@@ -121,6 +121,22 @@ public abstract class AbstractJumper implements Jumper {
     }
 
     @Override
+    public void dispatchOnStart() {
+    }
+
+    @Override
+    public void dispatchOnStop(boolean isFinishing) {
+    }
+
+    @Override
+    public void dispatchOnDestroy() {
+    }
+
+    @Override
+    public void dispatchOnRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    }
+
+    @Override
     public boolean isPaused() {
         return paused;
     }
