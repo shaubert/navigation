@@ -80,7 +80,8 @@ public abstract class AbstractJumper implements Jumper {
     @Override
     public void dispatchOnCreate(Bundle savedInstanceState, Object persistableBundle) {
         Context context = starter.getContext();
-        if (context instanceof Activity) {
+        if (context instanceof Activity
+                && savedInstanceState == null) {
             handleIntent(((Activity) context).getIntent());
         }
     }
