@@ -40,7 +40,7 @@ public class Starter {
     public void startActivity(Intent intent, Bundle bundle) {
         if (context != null) {
             if (bundle != null) {
-                ActivityCompat.startActivity((Activity) context, intent, bundle);
+                ActivityCompat.startActivity(context, intent, bundle);
             } else {
                 context.startActivity(intent);
             }
