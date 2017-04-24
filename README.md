@@ -8,7 +8,7 @@ Simplify intent creation, passing extras, activity animations and provides abstr
         maven{url "https://github.com/shaubert/maven-repo/raw/master/releases"}
     }
     dependencies {
-        compile 'com.shaubert.ui.jumper:library:1.1.5'
+        compile 'com.shaubert.ui.jumper:library:1.2'
     }
 
 ## How-to
@@ -29,9 +29,38 @@ Where `ImageViewActivity.Args` is activity arguments:
         public Args(String url) {
             this.url = url;
         }
+        
+        public Args() {
+        }
+
+        protected Args(Parcel in) {
+            this.url = in.readString();
+        }
+        
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+        
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.url);
+        }
+        
+        public static final Creator<Args> CREATOR = new Creator<Args>() {
+            @Override
+            public Args createFromParcel(Parcel source) {
+                return new Args(source);
+            }
+        
+            @Override
+            public Args[] newArray(int size) {
+                return new Args[size];
+            }
+        };
     }
     
-`Args` helps you to convert your non-transient fields into android `Bundle` and vice versa. List of supported types: `Args.Type`. If your jump has no arguments use `VoidArgs`.
+`Args` helps you to convert your parcelable fields into android `Bundle` and vice versa. If your jump has no arguments use `VoidArgs`.
 
 ### Step 2
 
