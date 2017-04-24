@@ -2,6 +2,7 @@ package com.shaubert.ui.jumper;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
 
 public class Config extends Args {
 
@@ -78,4 +79,37 @@ public class Config extends Args {
         return toBundle(null);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.openIntentAfterStart, flags);
+        dest.writeByte(this.finishAfterStart ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.useUpInActionBarAsFinish ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.removeUpFromActionBar ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.jumpAnimations, flags);
+    }
+
+    protected Config(Parcel in) {
+        this.openIntentAfterStart = in.readParcelable(Intent.class.getClassLoader());
+        this.finishAfterStart = in.readByte() != 0;
+        this.useUpInActionBarAsFinish = in.readByte() != 0;
+        this.removeUpFromActionBar = in.readByte() != 0;
+        this.jumpAnimations = in.readParcelable(JumpAnimations.class.getClassLoader());
+    }
+
+    public static final Creator<Config> CREATOR = new Creator<Config>() {
+        @Override
+        public Config createFromParcel(Parcel source) {
+            return new Config(source);
+        }
+
+        @Override
+        public Config[] newArray(int size) {
+            return new Config[size];
+        }
+    };
 }
