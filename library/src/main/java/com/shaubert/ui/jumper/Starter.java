@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
@@ -88,14 +89,11 @@ public class Starter {
         if (context != null) {
             ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, bundle);
         } else {
-            if (bundle != null) {
-                if (requestCode != 0 && requestCode != -1) {
-                    throw new IllegalStateException("Fragment does not supported start activity for result with extra activity bundle");
-                }
-                ActivityCompat.startActivityForResult(getActivityFromFragment(), intent, requestCode, bundle);
+            if (supportFragment != null) {
+                supportFragment.startActivityForResult(intent, requestCode, bundle);
             } else {
-                if (supportFragment != null) {
-                    supportFragment.startActivityForResult(intent, requestCode);
+                if (Build.VERSION.SDK_INT >= 16) {
+                    fragment.startActivityForResult(intent, requestCode, bundle);
                 } else {
                     fragment.startActivityForResult(intent, requestCode);
                 }
@@ -108,7 +106,7 @@ public class Starter {
     }
 
     public void finishActivity() {
-        if (context != null && context instanceof Activity) {
+        if (context instanceof Activity) {
             finishActivity((Activity) context);
         } else {
             Activity activity = getActivityFromFragment();
