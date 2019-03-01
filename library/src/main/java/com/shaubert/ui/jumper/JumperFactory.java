@@ -9,6 +9,6 @@ public interface JumperFactory<JUMPER extends Jumper> {
 
     public JUMPER createFor(Fragment fragment);
 
-    public JUMPER createFor(android.support.v4.app.Fragment fragment);
+    public JUMPER createFor(androidx.fragment.app.Fragment fragment);
 
 }

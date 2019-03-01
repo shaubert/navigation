@@ -7,13 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 
 public class Starter {
     private Jumper jumper;
     private Context context;
     private Fragment fragment;
-    private android.support.v4.app.Fragment supportFragment;
+    private androidx.fragment.app.Fragment supportFragment;
 
     public Starter(Jumper jumper, Context context) {
         this.jumper = jumper;
@@ -25,7 +25,7 @@ public class Starter {
         this.fragment = fragment;
     }
 
-    public Starter(Jumper jumper, android.support.v4.app.Fragment fragment) {
+    public Starter(Jumper jumper, androidx.fragment.app.Fragment fragment) {
         this.jumper = jumper;
         this.supportFragment = fragment;
     }

@@ -5,7 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public abstract class AbstractJumper implements Jumper {
 
@@ -21,7 +21,7 @@ public abstract class AbstractJumper implements Jumper {
         this.starter = new Starter(this, fragment);
     }
 
-    public AbstractJumper(android.support.v4.app.Fragment fragment) {
+    public AbstractJumper(androidx.fragment.app.Fragment fragment) {
         this.starter = new Starter(this, fragment);
     }
 
