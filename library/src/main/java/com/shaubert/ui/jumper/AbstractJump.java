@@ -6,15 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.core.app.ActivityOptionsCompat;
 
-public abstract class AbstractJump<T extends Args> implements Jump<T> {
+public abstract class AbstractJump<ARGS extends Args, CONFIG extends Config> implements Jump<ARGS, CONFIG> {
 
     private Starter starter;
     private Class<?> actClass;
 
     private ActivityOptionsCompat activityOptions;
     private Bundle extras;
-    private T args;
-    private Config config;
+    private ARGS args;
+    private CONFIG config;
 
     protected AbstractJump(Starter starter, Class<?> actClass) {
         this.starter = starter;
@@ -26,25 +26,25 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
     }
 
     @Override
-    public Jump<T> withExtras(Bundle extras) {
+    public Jump<ARGS, CONFIG> withExtras(Bundle extras) {
         this.extras = extras;
         return this;
     }
 
     @Override
-    public Jump<T> withArgs(T args) {
+    public Jump<ARGS, CONFIG> withArgs(ARGS args) {
         this.args = args;
         return this;
     }
 
     @Override
-    public Jump<T> withConfig(Config config) {
+    public Jump<ARGS, CONFIG> withConfig(CONFIG config) {
         this.config = config;
         return this;
     }
 
     @Override
-    public Jump<T> withActivityOptions(ActivityOptionsCompat activityOptions) {
+    public Jump<ARGS, CONFIG> withActivityOptions(ActivityOptionsCompat activityOptions) {
         this.activityOptions = activityOptions;
         return this;
     }

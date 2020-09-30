@@ -5,7 +5,7 @@ import com.shaubert.lifecycle.objects.LifecycleDispatcher;
 
 public interface Jumper extends LifecycleDispatcher {
 
-    <T extends Args> Jump<T> to(Class<?> actClass);
+    <ARGS extends Args, CONFIG extends Config> Jump<ARGS, CONFIG> to(Class<?> actClass);
 
     <T extends Args> T getArgs(Intent intent);
 

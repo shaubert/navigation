@@ -4,17 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.core.app.ActivityOptionsCompat;
 
-public interface Jump<T extends Args> {
+public interface Jump<ARGS extends Args, CONFIG extends Config> {
 
     Intent getIntent();
 
-    Jump<T> withExtras(Bundle extras);
+    Jump<ARGS, CONFIG> withExtras(Bundle extras);
 
-    Jump<T> withArgs(T args);
+    Jump<ARGS, CONFIG> withArgs(ARGS args);
 
-    Jump<T> withActivityOptions(ActivityOptionsCompat activityOptions);
+    Jump<ARGS, CONFIG> withActivityOptions(ActivityOptionsCompat activityOptions);
 
-    Jump<T> withConfig(Config config);
+    Jump<ARGS, CONFIG> withConfig(CONFIG config);
 
     void jump();
 

@@ -2,7 +2,7 @@ package com.shaubert.ui.jumper;
 
 import android.content.Intent;
 
-public class ClearTopJump<T extends Args> extends SingleTopJump<T> {
+public class ClearTopJump<ARGS extends Args, CONFIG extends Config> extends SingleTopJump<ARGS, CONFIG> {
 
     public ClearTopJump(Starter starter, Class<?> actClass) {
         super(starter, actClass);
