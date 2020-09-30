@@ -112,7 +112,7 @@ public abstract class AbstractJump<T extends Args> implements Jump<T> {
     private Config getParentConfig() {
         Config currentConfig = starter.getCurrentConfig();
         if (currentConfig != null) {
-            return currentConfig.createChildAcitivityConfig();
+            return currentConfig.createChildActivityConfig();
         }
         return null;
     }

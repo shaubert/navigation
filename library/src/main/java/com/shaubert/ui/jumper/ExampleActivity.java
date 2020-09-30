@@ -2,10 +2,8 @@ package com.shaubert.ui.jumper;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.ActionBar;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.MenuItem;
 
 /**
  * Use as a template for your root activity
@@ -23,7 +21,6 @@ class ExampleActivity extends AppCompatActivity {
         setupConfig(getIntent());
 
         onNewIntent(getIntent());
-        setupActionBar();
     }
 
     private void setupConfig(Intent intent) {
@@ -47,38 +44,6 @@ class ExampleActivity extends AppCompatActivity {
 
         getJumper().handleIntent(intent);
         setupConfig(intent);
-    }
-
-    @Override
-    public void setSupportActionBar(Toolbar toolbar) {
-        setupActionBar();
-    }
-
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null && !config.isRemoveUpFromActionBar()) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                boolean superResult = !config.isUseUpInActionBarAsFinish() && super.onOptionsItemSelected(item);
-                if (!superResult && isShowHomeAsUp()) {
-                    finish();
-                }
-                return superResult;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private boolean isShowHomeAsUp() {
-        ActionBar actionBar = getSupportActionBar();
-        return actionBar != null && (actionBar.getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP) != 0;
     }
 
     @Override

@@ -17,7 +17,6 @@ public abstract class Args implements Parcelable {
         return fromArgs(intent.getExtras());
     }
 
-    @SuppressWarnings("unchecked")
     public static <T extends Args> T fromArgs(Bundle bundle) {
         if (bundle == null) return null;
         return bundle.getParcelable(ARGS_KEY);

@@ -2,18 +2,17 @@ package com.shaubert.ui.jumper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 public class Starter {
     private Jumper jumper;
     private Context context;
     private Fragment fragment;
-    private androidx.fragment.app.Fragment supportFragment;
 
     public Starter(Jumper jumper, Context context) {
         this.jumper = jumper;
@@ -25,15 +24,9 @@ public class Starter {
         this.fragment = fragment;
     }
 
-    public Starter(Jumper jumper, androidx.fragment.app.Fragment fragment) {
-        this.jumper = jumper;
-        this.supportFragment = fragment;
-    }
-
     public Starter(Starter starter) {
         this.context = starter.context;
         this.fragment = starter.fragment;
-        this.supportFragment = starter.supportFragment;
         this.jumper = starter.jumper;
     }
 
@@ -49,22 +42,14 @@ public class Starter {
             if (bundle != null) {
                 ActivityCompat.startActivity(getActivityFromFragment(), intent, bundle);
             } else {
-                if (supportFragment != null) {
-                    supportFragment.startActivity(intent);
-                } else {
-                    fragment.startActivity(intent);
-                }
+                fragment.startActivity(intent);
             }
         }
     }
 
     @SuppressLint("NewApi")
     private Activity getActivityFromFragment() {
-        if (supportFragment != null) {
-            return supportFragment.getActivity();
-        } else {
-            return fragment.getActivity();
-        }
+        return fragment.getActivity();
     }
 
     public Config getCurrentConfig() {
@@ -89,15 +74,7 @@ public class Starter {
         if (context != null) {
             ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, bundle);
         } else {
-            if (supportFragment != null) {
-                supportFragment.startActivityForResult(intent, requestCode, bundle);
-            } else {
-                if (Build.VERSION.SDK_INT >= 16) {
-                    fragment.startActivityForResult(intent, requestCode, bundle);
-                } else {
-                    fragment.startActivityForResult(intent, requestCode);
-                }
-            }
+            fragment.startActivityForResult(intent, requestCode, bundle);
         }
     }
 
