@@ -96,4 +96,12 @@ public class Starter {
     protected void finishActivity(Activity activity) {
         activity.finish();
     }
+
+    public boolean isActivityBased() {
+        return context instanceof Activity;
+    }
+
+    public boolean isFragmentBased() {
+        return fragment != null;
+    }
 }

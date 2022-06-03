@@ -46,6 +46,10 @@ public abstract class AbstractJumper implements Jumper {
 
     @Override
     public void handleIntent(Intent intent) {
+        if (!starter.isActivityBased()) {
+            return;
+        }
+
         Config config = getConfig(intent);
         if (config == null) return;
 
@@ -76,6 +80,10 @@ public abstract class AbstractJumper implements Jumper {
 
     @Override
     public void dispatchOnCreate(Bundle savedInstanceState, Object persistableBundle) {
+        if (!starter.isActivityBased()) {
+            return;
+        }
+
         Context context = starter.getContext();
         if (context instanceof Activity
                 && savedInstanceState == null) {
@@ -96,14 +104,16 @@ public abstract class AbstractJumper implements Jumper {
     public void dispatchOnPause(boolean isFinishing) {
         paused = true;
 
-        Context context = starter.getContext();
-        if (context instanceof Activity) {
-            Activity activity = (Activity) context;
-            Config config = getConfig(activity.getIntent());
-            if (config != null && activity.isFinishing()) {
-                JumpAnimations animations = config.getJumpAnimations();
-                if (animations != null) {
-                    animations.setupForBackwardTransition(activity);
+        if (starter.isActivityBased()) {
+            Context context = starter.getContext();
+            if (context instanceof Activity) {
+                Activity activity = (Activity) context;
+                Config config = getConfig(activity.getIntent());
+                if (config != null && activity.isFinishing()) {
+                    JumpAnimations animations = config.getJumpAnimations();
+                    if (animations != null) {
+                        animations.setupForBackwardTransition(activity);
+                    }
                 }
             }
         }
