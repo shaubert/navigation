@@ -14,12 +14,12 @@ public abstract class AbstractJumper implements Jumper {
     private boolean paused = true;
     private boolean attached;
 
-    public AbstractJumper(Context context) {
-        this.starter = new Starter(this, context);
-    }
-
-    public AbstractJumper(Fragment fragment) {
-        this.starter = new Starter(this, fragment);
+    public AbstractJumper(Object fragmentOrContext) {
+        if (fragmentOrContext instanceof Fragment) {
+            this.starter = new Starter(this, (Fragment) fragmentOrContext);
+        } else {
+            this.starter = new Starter(this, (Context) fragmentOrContext);
+        }
     }
 
     public Starter getStarter() {

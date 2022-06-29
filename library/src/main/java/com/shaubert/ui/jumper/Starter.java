@@ -10,24 +10,24 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 public class Starter {
-    private Jumper jumper;
+    private ConfigResolver configResolver;
     private Context context;
     private Fragment fragment;
 
-    public Starter(Jumper jumper, Context context) {
-        this.jumper = jumper;
+    public Starter(ConfigResolver configResolver, Context context) {
+        this.configResolver = configResolver;
         this.context = context;
     }
 
-    public Starter(Jumper jumper, Fragment fragment) {
-        this.jumper = jumper;
+    public Starter(ConfigResolver configResolver, Fragment fragment) {
+        this.configResolver = configResolver;
         this.fragment = fragment;
     }
 
     public Starter(Starter starter) {
         this.context = starter.context;
         this.fragment = starter.fragment;
-        this.jumper = starter.jumper;
+        this.configResolver = starter.configResolver;
     }
 
     @SuppressLint("NewApi")
@@ -63,7 +63,7 @@ public class Starter {
         }
 
         if (activity != null) {
-            return jumper.getConfig(activity.getIntent());
+            return configResolver.getConfig(activity.getIntent());
         }
 
         return null;
