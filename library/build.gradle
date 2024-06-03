@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    implementation 'androidx.fragment:fragment:1.4.1'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.fragment:fragment:1.7.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
 
     implementation 'com.shaubert.lifecycle.objects:library:1.5'
 
@@ -11,12 +11,21 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 30
+        minSdkVersion 22
+        targetSdkVersion 33
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+//            withJavadocJar()
+        }
+    }
+
+    namespace "com.shaubert.ui.jumper"
 }
 
 apply from: '../maven_push.gradle'
